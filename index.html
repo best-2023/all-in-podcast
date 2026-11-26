@@ -108,6 +108,34 @@
       .toc-meta { display: block; font-size: 12.5px; color: var(--muted); margin-top: 2px; font-variant-numeric: tabular-nums; }
       .toc-arrow { flex: 0 0 auto; font-size: 20px; color: var(--muted); line-height: 1; padding-bottom: 2px; }
 
+      /* ---------- 已读 / 未读（localStorage） ---------- */
+      .toc-tools {
+        display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;
+        margin: 10px 0 2px; padding: 10px 0 2px; border-top: 1px dashed var(--line);
+      }
+      .toc-progress { font-size: 13.5px; color: var(--muted); font-variant-numeric: tabular-nums; margin-right: auto; }
+      .toc-progress strong { color: var(--ink); }
+      .toc-tools button {
+        min-height: 36px; padding: 5px 14px; border-radius: 999px; cursor: pointer;
+        border: 1px solid var(--line); background: var(--surface2); color: var(--ink);
+        font-size: 13.5px; font-weight: 700; font-family: inherit;
+      }
+      .toc-tools button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+      @media (prefers-color-scheme: dark) { .toc-tools button[aria-pressed="true"] { color: #1c1206; } }
+      .toc-note { font-size: 12px; color: var(--muted); margin: 6px 0 0; }
+      .read-badge {
+        flex: 0 0 auto; font-size: 11.5px; font-weight: 700; line-height: 1;
+        border-radius: 999px; padding: 4px 9px; white-space: nowrap;
+      }
+      .read-badge.unread { background: var(--coral); color: #fff; }
+      @media (prefers-color-scheme: dark) { .read-badge.unread { color: #1c0f08; } }
+      .read-badge.read { background: var(--surface2); color: var(--muted); border: 1px solid var(--line); }
+      .toc-list li.is-read .toc-title { color: var(--muted); font-weight: 500; }
+      .toc-list li.is-read .toc-day { color: var(--muted); }
+      .toc-empty {
+        padding: 18px 4px 12px; text-align: center; color: var(--muted); font-size: 14px;
+      }
+
       /* ---------- 正文中的月份分隔 ---------- */
       .month-head {
         display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px;
@@ -303,44 +331,61 @@
       <main id="dir-view">
       <header class="intro">
         <h1><span class="en">All-In</span> 播客中文总结</h1>
-        <p class="lede">共 <strong>9 期</strong>（2026 年 10 月 21 日 – 11 月 17 日），从新到旧。<strong>目录按月份归档</strong>，点任意一期打开它的<strong>单期页</strong>——那一期的音频和图文只在打开时才加载，不打开不占流量。每期可听<strong>中文摘要朗读</strong>（0.75–2 倍速）；<strong>图文幻灯片</strong>左右滑动看重点，想看全文点卡内的「本章要点全文」。</p>
+        <p class="lede">共 <strong>11 期</strong>（2026 年 10 月 21 日 – 11 月 24 日），从新到旧。<strong>目录按月份归档</strong>，点任意一期打开它的<strong>单期页</strong>——那一期的音频和图文只在打开时才加载，不打开不占流量。每期可听<strong>中文摘要朗读</strong>（0.75–2 倍速）；<strong>图文幻灯片</strong>左右滑动看重点，想看全文点卡内的「本章要点全文」。</p>
         <div class="global-note"><strong>说明：</strong>音频是中文摘要朗读，<strong>不是原始播客录音</strong>；文中数字多为嘉宾<strong>说法或估计，未独立核实</strong>，每期文末有详细标注。配图为主题插画。</div>
       </header>
 
       <section class="toc" id="toc" aria-label="目录">
         <div class="toc-head">
           <h2>目录</h2>
-          <p>按<strong>年月</strong>归档，从新到旧 · 共 <strong>9 期</strong> · 中文朗读合计约 <strong>2 小时 5 分钟</strong></p>
+          <p>按<strong>年月</strong>归档，从新到旧 · 共 <strong>11 期</strong> · 中文朗读合计约 <strong>2 小时 31 分钟</strong></p>
         </div>
+        <div class="toc-tools">
+          <span class="toc-progress" id="read-progress">已读 <strong>0</strong> / 11 期</span>
+          <button type="button" id="filter-unread" aria-pressed="false">只看未读</button>
+          <button type="button" id="mark-all-read">全部标为已读</button>
+        </div>
+        <p class="toc-note">已读状态保存在当前浏览器的本地存储（localStorage）里，只存在这台设备这个浏览器中，换设备或清除浏览器数据后会重置。</p>
+        <p class="toc-empty" id="toc-empty" hidden>全部 11 期都已读完，没有未读的了。</p>
 
         <div class="toc-month">
           <div class="toc-month-head">
             <h3>2026 年 11 月</h3>
-            <span class="range">5 期 · 11 月 4 日 – 17 日</span>
+            <span class="range">7 期 · 11 月 4 日 – 24 日</span>
             
           </div>
           <ol class="toc-list">
-            <li><a href="#/ep-2026-11-17">
-              <span class="toc-date"><span class="toc-day">17</span><span class="toc-wd">周二</span></span>
-              <span class="toc-main"><span class="toc-title"><span class="new">最新</span>Databricks 首席执行官：AGI 已经来了，企业为何落后</span><span class="toc-meta">中文朗读 17:46 · 5 章图文</span></span>
+            <li><a href="#/ep-2026-11-24" data-ep="ep-2026-11-24">
+              <span class="toc-date"><span class="toc-day">24</span><span class="toc-wd">周二</span></span>
+              <span class="toc-main"><span class="toc-title"><span class="new">最新</span>CrowdStrike 首席执行官：AI 网络攻击浪潮、超高速黑客与补丁难题</span><span class="toc-meta">中文朗读 10:40 · 6 章图文</span></span>
               <span class="toc-arrow" aria-hidden="true">&#8250;</span>
             </a></li>
-            <li><a href="#/ep-2026-11-14">
+            <li><a href="#/ep-2026-11-20" data-ep="ep-2026-11-20">
+              <span class="toc-date"><span class="toc-day">20</span><span class="toc-wd">周五</span></span>
+              <span class="toc-main"><span class="toc-title">Anthropic 上市、英伟达陷入危机、市场大跌、开源遭打压？</span><span class="toc-meta">中文朗读 15:25 · 5 章图文</span></span>
+              <span class="toc-arrow" aria-hidden="true">&#8250;</span>
+            </a></li>
+            <li><a href="#/ep-2026-11-17" data-ep="ep-2026-11-17">
+              <span class="toc-date"><span class="toc-day">17</span><span class="toc-wd">周二</span></span>
+              <span class="toc-main"><span class="toc-title">Databricks 首席执行官：AGI 已经来了，企业为何落后</span><span class="toc-meta">中文朗读 17:46 · 5 章图文</span></span>
+              <span class="toc-arrow" aria-hidden="true">&#8250;</span>
+            </a></li>
+            <li><a href="#/ep-2026-11-14" data-ep="ep-2026-11-14">
               <span class="toc-date"><span class="toc-day">14</span><span class="toc-wd">周六</span></span>
               <span class="toc-main"><span class="toc-title">黄仁勋下台：“间谍”风波、出口管制与市场冲击</span><span class="toc-meta">中文朗读 28:03 · 6 章图文</span></span>
               <span class="toc-arrow" aria-hidden="true">&#8250;</span>
             </a></li>
-            <li><a href="#/ep-2026-11-10">
+            <li><a href="#/ep-2026-11-10" data-ep="ep-2026-11-10">
               <span class="toc-date"><span class="toc-day">10</span><span class="toc-wd">周二</span></span>
               <span class="toc-main"><span class="toc-title">自由与安全：Axon 首席执行官谈警务的未来</span><span class="toc-meta">中文朗读 15:46 · 6 章图文</span></span>
               <span class="toc-arrow" aria-hidden="true">&#8250;</span>
             </a></li>
-            <li><a href="#/ep-2026-11-07">
+            <li><a href="#/ep-2026-11-07" data-ep="ep-2026-11-07">
               <span class="toc-date"><span class="toc-day">7</span><span class="toc-wd">周六</span></span>
               <span class="toc-main"><span class="toc-title">中期选举惨败与四万亿美元 AI 抛售</span><span class="toc-meta">中文朗读 14:07 · 5 章图文</span></span>
               <span class="toc-arrow" aria-hidden="true">&#8250;</span>
             </a></li>
-            <li><a href="#/ep-2026-11-04">
+            <li><a href="#/ep-2026-11-04" data-ep="ep-2026-11-04">
               <span class="toc-date"><span class="toc-day">4</span><span class="toc-wd">周三</span></span>
               <span class="toc-main"><span class="toc-title">2026 选举夜直播：与 Besties 一起看开票</span><span class="toc-meta">中文朗读 8:39 · 6 章图文 · 直播特辑</span></span>
               <span class="toc-arrow" aria-hidden="true">&#8250;</span>
@@ -355,22 +400,22 @@
             
           </div>
           <ol class="toc-list">
-            <li><a href="#/ep-2026-10-30">
+            <li><a href="#/ep-2026-10-30" data-ep="ep-2026-10-30">
               <span class="toc-date"><span class="toc-day">30</span><span class="toc-wd">周五</span></span>
               <span class="toc-main"><span class="toc-title">Anthropic 招股、谷歌市值蒸发与中期选举预测</span><span class="toc-meta">中文朗读 9:50 · 5 章图文</span></span>
               <span class="toc-arrow" aria-hidden="true">&#8250;</span>
             </a></li>
-            <li><a href="#/ep-2026-10-29">
+            <li><a href="#/ep-2026-10-29" data-ep="ep-2026-10-29">
               <span class="toc-date"><span class="toc-day">29</span><span class="toc-wd">周四</span></span>
               <span class="toc-main"><span class="toc-title">WHOOP 首席执行官：健康数据护城河与 FDA 之争</span><span class="toc-meta">中文朗读 8:08 · 6 章图文</span></span>
               <span class="toc-arrow" aria-hidden="true">&#8250;</span>
             </a></li>
-            <li><a href="#/ep-2026-10-23">
+            <li><a href="#/ep-2026-10-23" data-ep="ep-2026-10-23">
               <span class="toc-date"><span class="toc-day">23</span><span class="toc-wd">周五</span></span>
               <span class="toc-main"><span class="toc-title">AI 网络恐慌与肯·格里芬的泡沫警告</span><span class="toc-meta">中文朗读 5:24 · 5 章图文</span></span>
               <span class="toc-arrow" aria-hidden="true">&#8250;</span>
             </a></li>
-            <li><a href="#/ep-2026-10-21">
+            <li><a href="#/ep-2026-10-21" data-ep="ep-2026-10-21">
               <span class="toc-date"><span class="toc-day">21</span><span class="toc-wd">周三</span></span>
               <span class="toc-main"><span class="toc-title">量子威胁、开源与前沿之争、SaaS 崩溃</span><span class="toc-meta">中文朗读 17:33 · 5 章图文</span></span>
               <span class="toc-arrow" aria-hidden="true">&#8250;</span>
@@ -536,8 +581,66 @@
           });
         }
 
+        /* ---------- 已读 / 未读：localStorage ---------- */
+        var READ_KEY = "allin-read-v1";
+        var readSet = {};
+        try {
+          var saved = JSON.parse(localStorage.getItem(READ_KEY) || "[]");
+          if (Array.isArray(saved)) saved.forEach(function (id) { readSet[id] = true; });
+        } catch (e) { readSet = {}; }
+        function saveRead() {
+          try { localStorage.setItem(READ_KEY, JSON.stringify(Object.keys(readSet))); } catch (e) {}
+        }
+        var unreadOnly = false;
+        var progressEl = document.getElementById("read-progress");
+        var filterBtn = document.getElementById("filter-unread");
+        var emptyEl = document.getElementById("toc-empty");
+        function refreshReadUI() {
+          var readCount = 0;
+          document.querySelectorAll(".toc-list a[data-ep]").forEach(function (a) {
+            var li = a.closest("li");
+            var isRead = !!readSet[a.getAttribute("data-ep")];
+            if (isRead) readCount++;
+            li.classList.toggle("is-read", isRead);
+            var badge = a.querySelector(".read-badge");
+            if (!badge) {
+              badge = document.createElement("span");
+              badge.className = "read-badge";
+              a.insertBefore(badge, a.querySelector(".toc-arrow"));
+            }
+            badge.textContent = isRead ? "✓ 已读" : "未读";
+            badge.classList.toggle("read", isRead);
+            badge.classList.toggle("unread", !isRead);
+            li.hidden = unreadOnly && isRead;
+          });
+          document.querySelectorAll(".toc-month").forEach(function (m) {
+            var anyVisible = false;
+            m.querySelectorAll(".toc-list li").forEach(function (li) { if (!li.hidden) anyVisible = true; });
+            m.hidden = !anyVisible;
+          });
+          emptyEl.hidden = !(unreadOnly && readCount >= EPISODES.length);
+          progressEl.innerHTML = "已读 <strong>" + readCount + "</strong> / " + EPISODES.length + " 期" +
+            (readCount < EPISODES.length ? " · 未读 <strong>" + (EPISODES.length - readCount) + "</strong> 期" : " · 全部读完");
+        }
+        function markRead(id) {
+          if (!readSet[id]) { readSet[id] = true; saveRead(); }
+          refreshReadUI();
+        }
+        filterBtn.addEventListener("click", function () {
+          unreadOnly = !unreadOnly;
+          filterBtn.setAttribute("aria-pressed", unreadOnly ? "true" : "false");
+          refreshReadUI();
+        });
+        document.getElementById("mark-all-read").addEventListener("click", function () {
+          EPISODES.forEach(function (ep) { readSet[ep.id] = true; });
+          saveRead();
+          refreshReadUI();
+        });
+
         /* ---------- 两层路由：目录页 / 单期页 ---------- */
         var EPISODES = [
+          { id: "ep-2026-11-24", date: "2026 年 11 月 24 日", short: "CrowdStrike 首席执行官：AI 网络攻击浪潮、超高速黑客与补丁难题" },
+          { id: "ep-2026-11-20", date: "2026 年 11 月 20 日", short: "Anthropic 上市、英伟达陷入危机、市场大跌、开源遭打压？" },
           { id: "ep-2026-11-17", date: "2026 年 11 月 17 日", short: "Databricks 首席执行官：AGI 已经来了，企业为何落后" },
           { id: "ep-2026-11-14", date: "2026 年 11 月 14 日", short: "黄仁勋下台：“间谍”风波、出口管制与市场冲击" },
           { id: "ep-2026-11-10", date: "2026 年 11 月 10 日", short: "自由与安全：Axon 首席执行官谈警务的未来" },
@@ -598,6 +701,7 @@
         function showEpisode(idx) {
           var ep = EPISODES[idx];
           currentId = ep.id;
+          markRead(ep.id);
           pauseAll();
           dirView.hidden = true;
           epView.hidden = false;
@@ -643,6 +747,7 @@
           }
         });
         window.addEventListener("hashchange", render);
+        refreshReadUI();
         render();
       })();
     </script>
